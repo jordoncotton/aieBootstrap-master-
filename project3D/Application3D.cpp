@@ -80,9 +80,11 @@ void Application3D::update(float deltaTime)
 			i == 10 ? white : black);
 	}
 
+	//add transform to see the axis
+
 	//// demonstrate a few shapes
 	Gizmos::addAABBFilled(vec3(0), vec3(1), vec4(.5, 0, 0, 0.5f)); //body
-
+	Gizmos::addSphere(vec3(2, 1, 2),1 , 9, 9, vec4(.5, 0, 0, 0.5f));//bullet
 	Gizmos::addSphere(vec3(0, 1, 0), 1, 8, 8, vec4(.5, 0, 0, 0.5f)); //left sphere
 	Gizmos::addCylinderFilled(vec3(2, 4, 0),//center
 		-1,//radius
@@ -101,7 +103,7 @@ void Application3D::update(float deltaTime)
 
 	if (input->isKeyDown(aie::INPUT_KEY_UP))
 	{
-		tank_base *= forward;
+		tank_base *= forwardTrans;
 	}
 
 	if (input->isKeyDown(aie::INPUT_KEY_LEFT))
@@ -111,7 +113,7 @@ void Application3D::update(float deltaTime)
 
 	if (input->isKeyDown(aie::INPUT_KEY_DOWN))
 	{
-		tank_base *= back;
+		tank_base *= backTrans;
 	}
 
 	if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
@@ -129,30 +131,8 @@ void Application3D::update(float deltaTime)
 		turret_base *= *rotateRight;
 	}
 
-	if (input->isKeyDown(aie::INPUT_KEY_W))
-	{
-		turret_base *= up;
-	}
-
-	if (input->isKeyDown(aie::INPUT_KEY_S))
-	{
-		turret_base *= down;
-	}
-
-	if (input->isKeyDown(aie::INPUT_KEY_SPACE))
-	{
-		shoot();
-	}
-
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
-		quit();
-
-	bulletSet(deltaTime);
-
-	if (bulletTime > 2)
-	{
-		demolishBullet();
-	}
+		quit();	
 }
 
 void Application3D::draw()

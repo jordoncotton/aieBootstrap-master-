@@ -8,7 +8,6 @@ using glm::vec3;
 using glm::vec4;
 using glm::mat4;
 using aie::Gizmos;
-using namespace std;
 
 Application3D::Application3D() 
 {
@@ -40,10 +39,34 @@ void Application3D::shutdown()
 	Gizmos::destroy();
 }
 mat4 tank_base;
+mat4 turrent_bullet;
 mat4 turret_base;
 mat4 barrel_base;
 mat4 world;
 mat4 Matrix3;
+
+struct Tank
+{
+	mat4 tank_base = world;
+	mat4 world = mat4(1);
+
+	mat4 tank_base_rot = glm::rotate(tank_base, 0.5f, vec3(0, 1, 0));
+	mat4 tank_base_trans = glm::translate(tank_base, vec3(0, 0, 0));
+	
+	mat4 turrent_base = glm::translate(tank_base, vec3(0, 1, 0));
+	mat4 turrent_base_rot = glm::rotate(turrent_base, 0.5f, vec3(0, 0, 0));
+	mat4 turrent_base_trans = glm::translate(turrent_base, vec3(0, 1, 0));
+
+	//////////////////////////////////////////////////////////////////////////
+
+	mat4 turrent_Barrel = glm::translate(turrent_base, vec3(0, 0, 0));
+	mat4 turrent_barrel_rot = glm::rotate(turrent_barrel, 0.5f, vec3(0, 0, 1));
+	mat4 turrent_barrel_trans = glm::translate(turrent_barrel, vec3(0, 0, 0));
+
+	mat4 turrent_barrel_translation = glm::translate(turrent_barrel, vec3(0, 0, 1));
+	mat4 turrent_barrel = glm::rotate(turrent_base, 0.5f, vec3(0, 0, 1));
+	mat4 turrent_barrel_rotation = glm::rotate(turrent_bullet, 0.5f, vec3(0, 0, 1));
+};
 
 void Application3D::update(float deltaTime) 
 {
@@ -103,32 +126,32 @@ void Application3D::update(float deltaTime)
 
 	if (input->isKeyDown(aie::INPUT_KEY_UP))
 	{
-		tank_base *= forwardTrans;
+		tank_base *= forward_trans;
 	}
 
 	if (input->isKeyDown(aie::INPUT_KEY_LEFT))
 	{
-		tank_base *= *rotateLeft;
+		tank_base *= *rotate_Left;
 	}
 
 	if (input->isKeyDown(aie::INPUT_KEY_DOWN))
 	{
-		tank_base *= backTrans;
+		tank_base *= back_trans;
 	}
 
 	if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
 	{
-		tank_base *= *rotateRight;
+		tank_base *= *rotate_Right;
 	}
 
 	if (input->isKeyDown(aie::INPUT_KEY_A))
 	{
-		turret_base *= *rotateLeft;
+		turret_base *= *rotate_Left;
 	}
 
 	if (input->isKeyDown(aie::INPUT_KEY_D))
 	{
-		turret_base *= *rotateRight;
+		turret_base *= *rotate_Right;
 	}
 
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
@@ -155,23 +178,23 @@ void Application3D::draw()
 
 void Application3D::shoot()
 {
-	if (!bulletExist)
+	if (!bullet_exist)
 	{
-		bulletExist = true;
-		bullet = barrelCap1;
+		bullet_exist = true;
+		bullet = barrel_cap1;
 	}
 }
 
-void Application3D::bulletSet(float deltaTime)
+void Application3D::bullet_set(float deltaTime)
 {
-	if (bulletExist)
+	if (bullet_exist)
 	{
-		bulletTime += deltaTime;
+		bullet_time += deltaTime;
 	}
 }
 
-void Application3D::demolishBullet()
+void Application3D::demolish_bullet()
 {
-	bulletExist = false;
-	bulletTime = 0;
+	bullet_exist = false;
+	bullet_time = 0;
 }

@@ -8,16 +8,18 @@ using glm::vec3;
 using glm::vec4;
 using glm::mat4;
 using aie::Gizmos;
+using namespace std;
 
-Application3D::Application3D() {
-
+Application3D::Application3D() 
+{
 }
 
-Application3D::~Application3D() {
-
+Application3D::~Application3D() 
+{
 }
 
-bool Application3D::startup() {
+bool Application3D::startup() 
+{
 	
 	setBackgroundColour(0.25f, 0.25f, 0.25f);
 
@@ -33,8 +35,8 @@ bool Application3D::startup() {
 	return true;
 }
 
-void Application3D::shutdown() {
-
+void Application3D::shutdown() 
+{
 	Gizmos::destroy();
 }
 mat4 tank_base;
@@ -46,7 +48,8 @@ mat4 Matrix3;
 void Application3D::update(float deltaTime) 
 {
 	world = mat4(1);
-	tank_base = world * tank_base; // * <insert transformation here>;
+	tank_base = world * tank_base * tank_base; 
+	turrent_base = tank_base * turrent_base * turret_base;
 
 	mat4 
 	
@@ -67,7 +70,8 @@ void Application3D::update(float deltaTime)
 	// draw a simple grid with gizmos
 	vec4 white(1);
 	vec4 black(0, 0, 0, 1);
-	for (int i = 0; i < 21; ++i) {
+	for (int i = 0; i < 21; ++i) 
+	{
 		Gizmos::addLine(vec3(-10 + i, 0, 10),
 			vec3(-10 + i, 0, -10),
 			i == 10 ? white : black);
@@ -97,7 +101,6 @@ void Application3D::update(float deltaTime)
 
 	if (input->isKeyDown(aie::INPUT_KEY_UP))
 	{
-
 		tank_base *= forward;
 	}
 
@@ -124,6 +127,16 @@ void Application3D::update(float deltaTime)
 	if (input->isKeyDown(aie::INPUT_KEY_D))
 	{
 		turret_base *= *rotateRight;
+	}
+
+	if (input->isKeyDown(aie::INPUT_KEY_W))
+	{
+		turret_base *= up;
+	}
+
+	if (input->isKeyDown(aie::INPUT_KEY_S))
+	{
+		turret_base *= down;
 	}
 
 	if (input->isKeyDown(aie::INPUT_KEY_SPACE))

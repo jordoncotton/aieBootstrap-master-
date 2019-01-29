@@ -30,6 +30,7 @@ protected:
 	glm::mat4 turrent_base;
 
 	glm::mat4 front;
+
 	glm::mat4 barrel_base;
 	
 	glm::mat4 bullet; 
@@ -39,6 +40,10 @@ protected:
 	
 	glm::mat4 forward = glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, .05, 0, 0, 1);
 	glm::mat4 back = glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -.05, 0, 0, 1);
+	glm::mat4 down = glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -.05, 0, 0, 1);
+	glm::mat4 up = glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, .05, 0, 0, 1);
+
+
 	glm::mat4 *rotateLeft = new glm::mat4(cos(.025), 0, -sin(.025), 0, 0, 1, 0, 0, sin(.025), 0, cos(.025), 0, 0, 0, 0, 1);
 	glm::mat4 *rotateRight = new glm::mat4(cos(-.025), 0, -sin(-.025), 0, 0, 1, 0, 0, sin(-.025), 0, cos(-.025), 0, 0, 0, 0, 1);
 

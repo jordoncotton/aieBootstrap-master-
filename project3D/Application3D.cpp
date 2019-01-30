@@ -13,43 +13,17 @@ using glm::vec4;
 using glm::mat4;
 using aie::Gizmos;
 
-//struct Tank
-//{
-//	Tank();
-//	glm::mat4 tank_base(1);
-//
-//	mat4 tank_base_rot;
-//	mat4 tank_base_trans;
-//
-//	mat4 base_turret;
-//	mat4 turret_base_rot;
-//	mat4 turret_base_trans;
-//
-//	mat4 turret_barrel;
-//	mat4 turret_barrel_rot;
-//	mat4 turret_barrel_trans;
-//
-//	mat4 turret_bullet_trans;
-//	mat4 turret_bullet;
-//	mat4 turret_bullet_rot;
-//
-//	float turret_bullet_size;
-//};
-	/*mat4 tank_base(1);*/
+
 	mat4 world(1);
 	mat4 tank_base_rot(1);
 	mat4 tank_base_trans(1);
-
-	/*mat4 base_turret(1);*/
+	
 	mat4 turret_base_rot(1);
 	mat4 turret_base_trans(1);
-
-	/*mat4 turret_barrel(1);*/
 	mat4 turret_barrel_rot(1);
 	mat4 turret_barrel_trans(1);
 
 	mat4 barrel_bullet_trans(1);
-	/*mat4 turret_bullet(1);*/
 	mat4 barrel_bullet_rot(1);
 	
 
@@ -148,17 +122,13 @@ void Application3D::update(float deltaTime)
 	if (input->isKeyDown(aie::INPUT_KEY_W))
 	{
 		tank_base_trans = tank_base_trans * glm::translate(forward_tank);
-		/*turret_base_trans = glm::translate(turret_base_trans, forward_tank);*/
 	}
 	if (input->isKeyDown(aie::INPUT_KEY_S))
 	{
 		tank_base_trans = tank_base_trans * glm::translate(-forward_tank);
-		/*turret_base_trans = glm::translate(turret_base_trans, forward_tank);*/
 	}
 
 	// input :: shoots the bullet in the direction of the turret
-	/*vec3 forward_bullet = vec3(turret_barrel[2].x, turret_barrel[2].z, -turret_barrel[2].y) * (40 * deltaTime);*/
-	//vec3 forward_bullet = abrams.turret_base[3].xyz;
 	if (input->isKeyDown(aie::INPUT_KEY_SPACE))
 	{
 		Gizmos::addSphere(barrel_bullet[3], .2, 8, 8, vec4(1, 1, 1, 1), &barrel_bullet); //bullet
@@ -169,11 +139,6 @@ void Application3D::update(float deltaTime)
 		Gizmos::addSphere(barrel_bullet[3], .2, 8, 8, vec4(1,1,1,1), &barrel_bullet); //bullet
 		barrel_bullet_trans = glm::translate(vec3(0, 0, 0));
 	}
-	
-	//else
-	//{
-	//	barrel_bullet_trans = turret_barrel_trans;
-	//}
 
 	// input :: rotates the Tank left and right
 	if (input->isKeyDown(aie::INPUT_KEY_A))
@@ -204,11 +169,6 @@ void Application3D::update(float deltaTime)
 	// quit if we press escape
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
-	
-	//// demonstrate a few shapes
-	/*Gizmos::addTransform(tank_base, 5);
-	Gizmos::addTransform(base_turret, 5);
-	Gizmos::addTransform(turret_barrel, 5);*/
 
 	// renders the Tank, Tank's turret base, and Tank's turret's base
 	Gizmos::addAABBFilled(tank_base[3], vec3(2, 0.8f, 2), red, &tank_base); //body
@@ -220,7 +180,6 @@ void Application3D::update(float deltaTime)
 
 void Application3D::draw()
 {
-
 	// wipe the screen to the background colour
 	clearScreen();
 

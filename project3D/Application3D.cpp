@@ -6,19 +6,65 @@
 #include "Input.h"
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+#include <glm/mat4x4.hpp>
 
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
 using aie::Gizmos;
 
-Application3D::Application3D() 
+//struct Tank
+//{
+//	Tank();
+//	glm::mat4 tank_base(1);
+//
+//	mat4 tank_base_rot;
+//	mat4 tank_base_trans;
+//
+//	mat4 base_turret;
+//	mat4 turret_base_rot;
+//	mat4 turret_base_trans;
+//
+//	mat4 turret_barrel;
+//	mat4 turret_barrel_rot;
+//	mat4 turret_barrel_trans;
+//
+//	mat4 turret_bullet_trans;
+//	mat4 turret_bullet;
+//	mat4 turret_bullet_rot;
+//
+//	float turret_bullet_size;
+//};
+	/*mat4 tank_base(1);*/
+	mat4 world(1);
+	mat4 tank_base_rot(1);
+	mat4 tank_base_trans(1);
+
+	/*mat4 base_turret(1);*/
+	mat4 turret_base_rot(1);
+	mat4 turret_base_trans(1);
+
+	/*mat4 turret_barrel(1);*/
+	mat4 turret_barrel_rot(1);
+	mat4 turret_barrel_trans(1);
+
+	mat4 barrel_bullet_trans(1);
+	/*mat4 turret_bullet(1);*/
+	mat4 barrel_bullet_rot(1);
+	
+
+Application3D::Application3D()
 {
 }
 
 Application3D::~Application3D() 
 {
 }
+
+glm::mat4 tank_base = world * tank_base_trans * tank_base_rot;
+glm::mat4 base_turret = tank_base * turret_base_trans * turret_base_rot;
+glm::mat4 turret_barrel = base_turret * turret_barrel_trans * turret_barrel_rot;
+glm::mat4 barrel_bullet = turret_barrel * barrel_bullet_trans * barrel_bullet_rot;
 
 bool Application3D::startup() 
 {
@@ -32,6 +78,20 @@ bool Application3D::startup()
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f,
 										  getWindowWidth() / (float)getWindowHeight(),
 										  0.1f, 1000.f);
+	//base
+	tank_base_rot = glm::rotate(tank_base, 0.0f, vec3(0, 1, 0));
+	tank_base_trans = glm::translate(tank_base, vec3(0, 0, 1));
+	//turret
+	turret_base_rot = glm::rotate(base_turret, -1.7f, vec3(0, 2, 0));
+	turret_base_trans = glm::translate(vec3(0, .5f, 0));
+	//barrel
+	turret_barrel_rot = glm::rotate(turret_barrel, -1.57f, vec3(0, 0, 1));
+	turret_barrel_trans = glm::translate(turret_barrel, vec3(1, 0.3f, 0));
+	//bullet
+	barrel_bullet_trans = glm::translate(vec3(0, 0, 0));
+	barrel_bullet_rot = glm::rotate(barrel_bullet, 1.57f, vec3(0, 0, 1));
+
+	float turret_bullet_size = 0.4f;
 
 	return true;
 }
@@ -41,38 +101,6 @@ void Application3D::shutdown()
 	Gizmos::destroy();
 }
 
-mat4 tank_base;
-mat4 turrent_bullet;
-mat4 turrent_base;
-mat4 barrel_base;
-mat4 world;
-mat4 Matrix3;
-
-struct Tank
-{
-	mat4 tank_base = world;
-	mat4 world = mat4(1);
-
-	mat4 tank_base_rot = glm::rotate(tank_base, 0.0f, vec3(0, 1, 0));
-	mat4 tank_base_trans = glm::translate(tank_base, vec3(0, 0, 0));
-	
-	mat4 turrent_base = glm::translate(tank_base, vec3(0, 1, 0));
-	mat4 turrent_base_rot = glm::rotate(turrent_base, 0.0f, vec3(0, 0, 0));
-	mat4 turrent_base_trans = glm::translate(turrent_base, vec3(0, 1, 0));
-
-	mat4 turrent_barrel = glm::translate(turrent_base, vec3(0, 0, 0));
-	mat4 turrent_barrel_rot = glm::rotate(turrent_barrel, 1.57f, vec3(0, 0, 1));
-	mat4 turrent_barrel_trans = glm::translate(turrent_barrel, vec3(0, 0, 0));
-
-	mat4 turrent_bullet_trans = glm::translate(turrent_barrel, vec3(0, 0, 1));
-	mat4 turrent_bullet = glm::rotate(turrent_base, 0.5f, vec3(0, 0, 1));
-	mat4 turrent_bullet_rot = glm::rotate(turrent_bullet, 1.57f, vec3(0, 0, 1));
-
-	float turrent_bullet_size = 0.4f;
-};
-
-Tank move;
-
 void Application3D::update(float deltaTime)
 {	
 	// query time since application started
@@ -80,7 +108,7 @@ void Application3D::update(float deltaTime)
 	time = 0;
 
 	// rotate camera
-	m_viewMatrix = glm::lookAt(vec3(glm::sin(time) * 0, 10, glm::cos(time) * 10),
+	m_viewMatrix = glm::lookAt(vec3(glm::sin(time) * 20, 10, glm::cos(time) * 20),
 		vec3(0), vec3(0, 1, 0));
 
 	// quit if we press escape
@@ -110,63 +138,84 @@ void Application3D::update(float deltaTime)
 	t[3] = vec4(-2, 0, 0, 1);
 
 	//transform matrices for the tank
-	move.tank_base = world * move.tank_base_trans * move.tank_base_rot;
-	move.turrent_base = move.world * move.turrent_base_trans * move.turrent_base_rot;
-	move.turrent_barrel = move.turrent_base * move.turrent_barrel_trans * move.turrent_barrel_rot;
+	tank_base = world * tank_base_trans * tank_base_rot;
+	base_turret = tank_base * turret_base_trans * turret_base_rot;
+	turret_barrel = base_turret * turret_barrel_trans * turret_barrel_rot;
 	//the bullet has no parent, it has an initial rotation of the barrels rotation in world
-	move.turrent_bullet = move.turrent_base * move.turrent_bullet_trans * move.turrent_bullet_rot;
+	barrel_bullet = turret_barrel * barrel_bullet_trans * barrel_bullet_rot;
 
-	vec3 forward_tank = move.tank_base[2] * (10 * deltaTime);
+	vec3 forward_tank = tank_base[2] * (10 * deltaTime);
 	if (input->isKeyDown(aie::INPUT_KEY_W))
 	{
-		move.tank_base_trans = glm::translate(move.tank_base_trans, forward_tank);
-		move.turrent_base_trans = glm::translate(move.turrent_base_trans, forward_tank);
+		tank_base_trans = tank_base_trans * glm::translate(forward_tank);
+		/*turret_base_trans = glm::translate(turret_base_trans, forward_tank);*/
+	}
+	if (input->isKeyDown(aie::INPUT_KEY_S))
+	{
+		tank_base_trans = tank_base_trans * glm::translate(-forward_tank);
+		/*turret_base_trans = glm::translate(turret_base_trans, forward_tank);*/
 	}
 
 	// input :: shoots the bullet in the direction of the turret
-	vec3 forward_bullet = vec3(move.turrent_barrel[2].x, move.turrent_barrel[2].z, -move.turrent_barrel[2].y) * (40 * deltaTime);
+	/*vec3 forward_bullet = vec3(turret_barrel[2].x, turret_barrel[2].z, -turret_barrel[2].y) * (40 * deltaTime);*/
 	//vec3 forward_bullet = abrams.turret_base[3].xyz;
 	if (input->isKeyDown(aie::INPUT_KEY_SPACE))
 	{
-		move.turrent_bullet_size = 0.4f;
-		move.turrent_bullet_trans = glm::translate(move.turrent_bullet_trans, forward_bullet);
+		Gizmos::addSphere(barrel_bullet[3], .2, 8, 8, vec4(1, 1, 1, 1), &barrel_bullet); //bullet
+		barrel_bullet_trans = barrel_bullet_trans * glm::translate(vec3(0, 5, 0));
 	}
-	else
+	if (input->isKeyUp(aie::INPUT_KEY_SPACE))
 	{
-		move.turrent_bullet_trans = move.turrent_barrel_trans;
-		move.turrent_bullet_size = 0.0f;
+		Gizmos::addSphere(barrel_bullet[3], .2, 8, 8, vec4(1,1,1,1), &barrel_bullet); //bullet
+		barrel_bullet_trans = glm::translate(vec3(0, 0, 0));
 	}
+	
+	//else
+	//{
+	//	barrel_bullet_trans = turret_barrel_trans;
+	//}
 
 	// input :: rotates the Tank left and right
 	if (input->isKeyDown(aie::INPUT_KEY_A))
-		move.tank_base_rot = glm::rotate(move.tank_base_rot, 0.1f, vec3(0, 1, 0));
+		tank_base_rot = glm::rotate(tank_base_rot, 0.1f, vec3(0, 1, 0));
 	if (input->isKeyDown(aie::INPUT_KEY_D))
-		move.tank_base_rot = glm::rotate(move.tank_base_rot, -0.1f, vec3(0, 1, 0));
+		tank_base_rot = glm::rotate(tank_base_rot, -0.1f, vec3(0, 1, 0));
 
 	// input :: rotate just the turret right and left
 	if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
 	{
-		move.turrent_base_rot = glm::rotate(move.turrent_base_rot, .05f, vec3(0, 1, 0));
+		turret_base_rot = glm::rotate(turret_base_rot, -.05f, vec3(0, 1, 0));
 	}
 	if (input->isKeyDown(aie::INPUT_KEY_LEFT))
 	{
-		move.turrent_base_rot = glm::rotate(move.turrent_base_rot, -.05f, vec3(0, 1, 0));
+		turret_base_rot = glm::rotate(turret_base_rot, .05f, vec3(0, 1, 0));
 	}
-
+	//input :: rotate barrel
+	if (input->isKeyUp(aie::INPUT_KEY_UP))
+	{
+	
+		turret_barrel_rot = turret_barrel_rot * glm::rotate(-.05f,vec3(0, 0, 1));
+	}
+	if (input->isKeyUp(aie::INPUT_KEY_DOWN))
+	{
+		
+		turret_barrel_rot = turret_barrel_rot * glm::rotate(.05f, vec3(0, 0, 1));
+	}
 	// quit if we press escape
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
 	
 	//// demonstrate a few shapes
-	Gizmos::addTransform(move.tank_base, 5);
-	Gizmos::addTransform(move.turrent_base, 5);
-	Gizmos::addTransform(move.turrent_barrel, 5);
+	/*Gizmos::addTransform(tank_base, 5);
+	Gizmos::addTransform(base_turret, 5);
+	Gizmos::addTransform(turret_barrel, 5);*/
 
 	// renders the Tank, Tank's turret base, and Tank's turret's base
-	Gizmos::addAABBFilled(move.world[3], vec3(1, 0.5, 1), red, &move.tank_base); //body
-	Gizmos::addSphere(move.world[3], 0.8, 8, 8, red, &move.turrent_base);//bullet
-	Gizmos::addSphere(vec3(1), move.turrent_bullet_size, 8, 8, red, &move.turrent_bullet); //left sphere
-	Gizmos::addCylinderFilled(move.world[3], 0.3, 1, 15, red, &move.turrent_barrel);//center
+	Gizmos::addAABBFilled(tank_base[3], vec3(2, 0.8f, 2), red, &tank_base); //body
+	//Gizmos::addAABBFilled(vec3(0), vec3(1), vec4(1, 0, 0, 1));
+	Gizmos::addSphere(base_turret[3], 2, 8, 8, black, &base_turret);//turret
+	
+	Gizmos::addCylinderFilled(turret_barrel[3], 0.4f, 3, 13, red, &turret_barrel); //barrel
 }
 
 void Application3D::draw()
